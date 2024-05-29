@@ -1,5 +1,5 @@
 import { AddingAssets, AddingAssetsEnum, TokenNetwork, TokenNetworkEnum, AccountDefaultEnum } from "@/const";
-import { ICRC1systemAssets } from "@/defaultTokens";
+import { ICRC2systemAssets } from "@/defaultTokens";
 import { useAppSelector } from "@redux/Store";
 import { Asset } from "@redux/models/AccountModels";
 import { Token } from "@redux/models/TokenModels";
@@ -8,8 +8,8 @@ import { useEffect, useState } from "react";
 export const TokenHook = (asset: Asset | undefined) => {
   const { assetLoading } = useAppSelector((state) => state.asset);
   const [manual, setManual] = useState(false);
-  const [network, setNetwork] = useState<TokenNetwork>(TokenNetworkEnum.enum["ICRC-1"]);
-  const [newAssetList, setNewAssetList] = useState<Array<Token>>(ICRC1systemAssets);
+  const [network, setNetwork] = useState<TokenNetwork>(TokenNetworkEnum.enum["ICRC-2"]);
+  const [newAssetList, setNewAssetList] = useState<Array<Token>>(ICRC2systemAssets);
   const [networkTOpen, setNetworkTOpen] = useState(false);
   const [assetTOpen, setAssetTOpen] = useState(false);
   const [errToken, setErrToken] = useState("");

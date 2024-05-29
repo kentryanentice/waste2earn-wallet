@@ -26,7 +26,7 @@ export const GeneralHook = () => {
   const changeSelectedAccount = (value: SubAccount | undefined) => dispatch(setSelectedAccount(value));
   const changeSelectedTransaction = (value: Transaction | undefined) => dispatch(setSelectedTransaction(value));
 
-  const getAssetIcon = (type: IconType, symbol?: string, logo?: string, principalId?: string) => {
+  const getAssetIcon = (type: IconType, symbol?: string, logo?: string) => {
     const size = type === IconTypeEnum.Enum.FILTER ? "w-6 h-6" : IconTypeEnum.Enum.ASSET ? "w-8 h-8" : "w-10 h-10";
 
     return (

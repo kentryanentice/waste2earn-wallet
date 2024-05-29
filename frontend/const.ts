@@ -12,9 +12,17 @@ import GoldTokenIcon from "@/assets/svg/files/gldt_icon.svg";
 import OrigynIcon from "@/assets/svg/files/ogy_icon.svg";
 import DragginzIcon from "@/assets/svg/files/dragginz.svg";
 import GLDGovIcon from "@/assets/svg/files/GLDov_icon.svg";
+import W2eIcon from "@/assets/svg/files/w2e-token.svg";
+import WPlIcon from "@/assets/svg/files/wPl-token.svg";
+import WPrIcon from "@/assets/svg/files/wPr-token.svg";
+import WGIcon from "@/assets/svg/files/wG-token.svg";
+import WMIcon from "@/assets/svg/files/wM-token.svg";
+import WOxIcon from "@/assets/svg/files/wOx-token.svg";
+import EWIcon from "@/assets/svg/files/eW-token.svg";
+
 import { z } from "zod";
 import { Token } from "@redux/models/TokenModels";
-import { ICRC1systemAssets, ICRC2systemAssets } from "./defaultTokens";
+import { ICRC2systemAssets } from "./defaultTokens";
 
 // Enums
 export const TransactionTypeEnum = z.enum(["RECEIVE", "SEND", "NONE"]);
@@ -32,7 +40,22 @@ export type DrawerOption = z.infer<typeof DrawerOptionEnum>;
 export const IconTypeEnum = z.enum(["ASSET", "HEADER", "FILTER"]);
 export type IconType = z.infer<typeof IconTypeEnum>;
 
-export const AssetSymbolEnum = z.enum(["ICP", "ckBTC", "CHAT", "KINIC", "SNS1", "HOT", "OGY", "W2E", "wPl", "wPr"]);
+export const AssetSymbolEnum = z.enum([
+  "ICP",
+  "ckBTC",
+  "CHAT",
+  "KINIC",
+  "SNS1",
+  "HOT",
+  "OGY",
+  "W2E",
+  "wPl",
+  "wPr",
+  "wG",
+  "wM",
+  "wOx",
+  "eW",
+]);
 export type AssetSymbol = z.infer<typeof AssetSymbolEnum>;
 
 export const ThemesEnum = z.enum(["dark", "light"]);
@@ -44,7 +67,7 @@ export type SendingStatus = z.infer<typeof SendingStatusEnum>;
 export const AddingAssetsEnum = z.enum(["adding", "done", "error", "none"]);
 export type AddingAssets = z.infer<typeof AddingAssetsEnum>;
 
-export const TokenNetworkEnum = z.enum(["ICRC-1", "ICRC-2"]);
+export const TokenNetworkEnum = z.enum(["ICRC-2"]);
 export type TokenNetwork = z.infer<typeof TokenNetworkEnum>;
 
 export const AccountDefaultEnum = z.enum(["Default"]);
@@ -71,7 +94,6 @@ export type SpecialTxType = z.infer<typeof SpecialTxTypeEnum>;
 export const DIP20systemAssets: Array<Token> = [];
 export const EXTsystemAssets: Array<Token> = [];
 export const systemAssets: { [key: string]: Array<Token> } = {
-  "ICRC-1": ICRC1systemAssets,
   "ICRC-2": ICRC2systemAssets,
 };
 
@@ -88,4 +110,11 @@ export const symbolIconDict: { [key: string]: string } = {
   GLDT: GoldTokenIcon,
   OGY: OrigynIcon,
   GLDGov: GLDGovIcon,
+  W2E: W2eIcon,
+  wPl: WPlIcon,
+  wPr: WPrIcon,
+  wG: WGIcon,
+  wM: WMIcon,
+  wOx: WOxIcon,
+  eW: EWIcon,
 };
