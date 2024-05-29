@@ -60,7 +60,7 @@ const DialogAssetConfirmation = ({
   function onClose() {
     showModal(false);
     setAssetOpen(false);
-    setNetwork(TokenNetworkEnum.enum["ICRC-1"]);
+    setNetwork(TokenNetworkEnum.enum["ICRC-2"]);
     setNewToken({
       address: "",
       symbol: "",

@@ -133,7 +133,7 @@ const AddAsset = ({ setAssetOpen, assetOpen, asset, setAssetInfo, tokens, assets
   function onClose() {
     addToAcordeonIdx();
     setAssetOpen(false);
-    setNetwork(TokenNetworkEnum.enum["ICRC-1"]);
+    setNetwork(TokenNetworkEnum.enum["ICRC-2"]);
     setNewToken({
       address: "",
       symbol: "",
