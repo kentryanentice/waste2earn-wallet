@@ -11,13 +11,11 @@ import { AuthNetworkTypeEnum, ThemesEnum } from "@/const";
 import { AuthNetwork } from "@redux/models/TokenModels";
 import { CustomInput } from "@components/Input";
 import { FaHome } from "react-icons/fa";
-import { useHistory } from "react-router-dom";
 
 const Login = () => {
   const { t } = useTranslation();
   const { loginOpts, seedOpen, setSeedOpen, seed, setSeed } = LoginHook();
   const { theme } = ThemeHook();
-  const navigate = useHistory();
 
   return (
     <Fragment>
@@ -31,7 +29,7 @@ const Login = () => {
 
           <LoginLogoIcon className="w-full max-w-[25rem]" />
         </div>
-        <div className="relative flex flex-col justify-center items-center w-full h-full">
+        <div className="relative flex flex-col justify-center items-center w-full h-full mb-5">
           <div className="flex flex-col justify-center items-center w-full h-full">
             <h2 className="text-[2rem] font-bold text-PrimaryTextColorLight dark:text-PrimaryTextColor">
               {t("login.title")}
@@ -85,15 +83,18 @@ const Login = () => {
               })}
             </div>
           </div>
-          <button
-            className="flex items-center justify-center p-4 rounded-md bg-SecondaryColor hover:bg-SecondaryColorActive text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-SecondaryColorActive"
-            onClick={() => navigate.push("https://waste2earn.xyz", "_blank")}
-            aria-label="Go to Home page" // Added aria-label for screen readers
-          >
-            <FaHome className="mr-2 text-xl" />
-            <span className="text-base font-medium">Home</span>
-          </button>
-          <div className="flex flex-col justify-center items-center text-center pt-14 pb-14">
+          <div>
+            <a
+              className="flex items-center justify-center p-5 rounded-md bg-SecondaryColor hover:bg-SecondaryColorActive text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-SecondaryColorActive"
+              href="https://waste2earn.xyz"
+              target="_blank"
+              aria-label="Go to Home page" rel="noreferrer"
+            >
+              <FaHome className="mr-2 text-xl" />
+              <span className="text-base font-medium">Return to Homepage</span>
+            </a>
+          </div>
+          <div className="flex flex-col justify-center items-center text-center pt-6 pb-8">
             <p className="font-light text-lg text-PrimaryTextColorLight dark:text-PrimaryTextColor">
               {t("login.bottom.msg")}
             </p>

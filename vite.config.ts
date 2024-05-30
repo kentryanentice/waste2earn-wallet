@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import { defineConfig } from "vite";
 import path from "path";
 import dfxJson from "./dfx.json";

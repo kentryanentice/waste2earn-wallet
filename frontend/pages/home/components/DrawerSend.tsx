@@ -48,7 +48,8 @@ const DrawerSend = ({ setDrawerOpen, drawerOpen }: DrawerSendProps) => {
     setManualPrinc,
     manualSub,
     setManualSub,
-
+    weight,
+    setWeight,
   } = SentHook(drawerOpen, baseAccount);
 
   return (
@@ -87,7 +88,8 @@ const DrawerSend = ({ setDrawerOpen, drawerOpen }: DrawerSendProps) => {
             setManualPrinc={setManualPrinc}
             manualSub={manualSub}
             setManualSub={setManualSub}
-
+            weight={weight}
+            setWeight={setWeight}
           ></SendOutAccount>
         )
       ) : (
@@ -102,6 +104,7 @@ const DrawerSend = ({ setDrawerOpen, drawerOpen }: DrawerSendProps) => {
           setAssetDropOpen={setAssetDropOpen}
           showModal={showModal}
           amount={amount}
+          weight={weight}
           setDrawerOpen={setDrawerOpen}
           setSendingStatus={setSendingStatus}
           setAmount={setAmount}

@@ -37,6 +37,8 @@ interface SendOutAccountProps {
   setManualPrinc(value: { princ: string; err: boolean }): void;
   manualSub: string;
   setManualSub(value: string): void;
+  weight: string;
+  setWeight(value: any): void;
 }
 
 interface ContactToSend {
@@ -68,6 +70,8 @@ const SendOutAccount = ({
   setManualPrinc,
   manualSub,
   setManualSub,
+  weight,
+  setWeight,
 }: SendOutAccountProps) => {
   const { t } = useTranslation();
 
@@ -185,7 +189,8 @@ const SendOutAccount = ({
         />
       )}
       <p className="text-md text-LockColor text-left">{newAccountErr}</p>
-      {/* <p className="w-full text-left opacity-60">{t("Enter weight in kilogram")}</p>
+      {/* weight input */}
+      <p className="w-full text-left text-PrimaryTextColor">{t("Enter weight in kilogram")}</p>
       <div className="flex flex-row justify-between items-center w-full gap-2 mb-2">
         <CustomInput
           intent={"primary"}
@@ -194,7 +199,7 @@ const SendOutAccount = ({
           border={"primary"}
           onChange={onChangeWeight}
         />
-      </div> */}
+      </div>
 
       <div className="w-full flex flex-row justify-between items-center mt-5 mb-2">
         <CustomButton
@@ -276,6 +281,10 @@ const SendOutAccount = ({
   }
   function onChangeIdx(e: ChangeEvent<HTMLInputElement>) {
     if (checkHexString(e.target.value)) setManualSub(e.target.value.trim());
+  }
+
+  function onChangeWeight(e: ChangeEvent<HTMLInputElement>) {
+    setWeight(e.target.value);
   }
 
   function onChangeInput(e: ChangeEvent<HTMLInputElement>) {
@@ -397,6 +406,7 @@ const SendOutAccount = ({
         setReciver({
           icrcAccount: myReceiver,
           strAccount: encodeIcrcAccount(myReceiver),
+          weight: weight,
           name: name,
           color: "#8A9CB7",
         });

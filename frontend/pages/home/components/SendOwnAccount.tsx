@@ -37,6 +37,7 @@ interface SendOwnAccountProps {
   setAssetDropOpen(value: boolean): void;
   showModal(value: boolean): void;
   amount: string;
+  weight: string,
   setDrawerOpen(value: boolean): void;
   setSendingStatus(value: SendingStatus): void;
   setAmount(value: string): void;
@@ -55,6 +56,7 @@ const SendOwnAccount = ({
   assetDropOpen,
   setAssetDropOpen,
   showModal,
+  weight,
   amount,
   setDrawerOpen,
   setSendingStatus,
@@ -161,8 +163,9 @@ const SendOwnAccount = ({
           onClick={onClose}
         />
       </div>
-      <p className="w-full text-left opacity-60">{t("Calculated Weight: 3kgs")}</p>
-      <p className="w-full text-left opacity-60">{t("amount")}</p>
+      <p className="w-full text-left opacity-60">{t("Waste Weight: ")}{weight} {t("kgs")}</p>
+
+      <p className="w-full text-left opacity-60">{t("Cost per kilogram")}</p>
       <div className={clsx(sendBox, "border-BorderColorLight dark:border-BorderColor", "items-center", "!mb-1")}>
         <div className={clsx(accountInfo)} lang="en-US">
           <CustomInput
@@ -181,6 +184,9 @@ const SendOwnAccount = ({
         </button>
         <ExchangeIcon />
       </div>
+
+      <p className="w-full text-left opacity-60">{t("Actual Fee: ")} {calculateTotalAmount()} </p>
+
       <div className="flex flex-row justify-between items-center w-full">
         {!maxAmount().valid ? (
           <p className="w-full text-left text-LockColor text-md  mr-3">{t("no.enought.balance")}</p>
@@ -222,6 +228,20 @@ const SendOwnAccount = ({
     setAmount("");
   }
 
+  function calculateTotalAmount() {
+    // Check if weight and selectedAsset are valid before calculation
+
+    const tokenRate = validateAmount(amount, Number(selectedAsset?.decimal || "8")) ? Number(amount) : 0;
+    const calcweight = Number(weight);
+
+    if (!tokenRate) {
+      console.error("Failed to fetch token rate");
+      return "";
+    }
+    const totalAmount = calcweight * tokenRate;
+    return totalAmount.toString();
+  }
+
   function onChangeAmount(e: ChangeEvent<HTMLInputElement>) {
     const amnt = e.target.value;
     if (Number(amnt) >= 0 && (validateAmount(amnt, Number(selectedAsset?.decimal || "8")) || amnt === ""))
@@ -238,8 +258,8 @@ const SendOwnAccount = ({
   }
 
   async function onSend() {
-    if (Number(amount) >= 0 && maxAmount().valid) {
-      if (Number(amount) > maxAmount().nAmount && maxAmount().valid) {
+    if (Number(calculateTotalAmount) >= 0 && maxAmount().valid) {
+      if (Number(calculateTotalAmount) > maxAmount().nAmount && maxAmount().valid) {
         setSendingStatus(SendingStatusEnum.enum.error);
         showModal(true);
       } else {
