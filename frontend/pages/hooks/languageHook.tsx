@@ -19,8 +19,8 @@ export const LanguageHook = () => {
   const languageOptionTemplate = () => {
     return (
       <div className="">
-        {languageMenu.code === "es" && <FlagSpain />}
         {languageMenu.code === "en" && <FlagUSA />}
+        {languageMenu.code === "es" && <FlagSpain />}
         {languageMenu.code === "it" && <FlagItaly />}
         {languageMenu.code === "pt" && <BrazilFlag />}
       </div>

@@ -72,7 +72,7 @@ const SendOwnAccount = ({
   const { userAgent } = IdentityHook();
 
   return (
-    <div className="flex flex-col justify-center items-center w-full h-full text-lg text-PrimaryTextColorLight dark:text-PrimaryTextColor">
+    <div className="flex flex-col justify-start items-center w-full h-full text-lg text-PrimaryTextColorLight dark:text-PrimaryTextColor">
       <p className="w-full text-left opacity-60">{t("from")}</p>
       <DropdownMenu.Root
         onOpenChange={(e: boolean) => {
@@ -258,8 +258,8 @@ const SendOwnAccount = ({
   }
 
   async function onSend() {
-    if (Number(calculateTotalAmount) >= 0 && maxAmount().valid) {
-      if (Number(calculateTotalAmount) > maxAmount().nAmount && maxAmount().valid) {
+    if (Number(amount) >= 0 && maxAmount().valid) {
+      if (Number(amount) > maxAmount().nAmount && maxAmount().valid) {
         setSendingStatus(SendingStatusEnum.enum.error);
         showModal(true);
       } else {

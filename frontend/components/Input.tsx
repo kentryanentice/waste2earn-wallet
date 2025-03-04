@@ -66,8 +66,8 @@ const input = cva("button", {
 
 export interface InputProps
   extends InputHTMLAttributes<HTMLInputElement>,
-    VariantProps<typeof input>,
-    VariantProps<typeof inputComp> {
+  VariantProps<typeof input>,
+  VariantProps<typeof inputComp> {
   compInClass?: string;
   compOutClass?: string;
   prefix?: any;

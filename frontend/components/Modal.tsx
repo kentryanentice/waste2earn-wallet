@@ -16,7 +16,7 @@ interface ModalProps {
 
 const Modal = ({
   open,
-  width = "w-[32rem]",
+  width = "100%",
   height = "",
   top = "top-[50%]",
   text = "text-PrimaryTextColorLight dark:text-PrimaryTextColor",
@@ -33,7 +33,7 @@ const Modal = ({
           <Dialog.Overlay className="DialogContent" />
           <Dialog.Content className={`fixed ${top} left-[50%] outline-none shadow-md z-[2000] `}>
             <div
-              className={`absolute flex flex-col justify-start items-start text-lg translate-x-[-50%] translate-y-[-50%] ${width} ${height}  ${background} ${padding} ${rounded} ${text} ${border}`}
+              className={`absolute flex flex-col justify-start items-start text-lg ${width} ${height}  ${background} ${padding} ${rounded} ${text} ${border}`}
             >
               {children}
             </div>

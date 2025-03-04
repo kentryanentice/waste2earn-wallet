@@ -68,7 +68,7 @@ const DetailList = () => {
               </div>
               <p className="text-md">{t("send")}</p>
             </div>
-            <div className="flex flex-col justify-center items-center w-1/3 gap-1">
+            <div className="flex flex-col justify-start items-center w-1/3 gap-1">
               <div
                 className="flex flex-row justify-center items-center w-7 h-7 bg-[#33b2ef] rounded-md cursor-pointer"
                 onClick={() => {
@@ -106,9 +106,9 @@ const DetailList = () => {
               {table.getRowModel().rows.map((row, idxTR) => (
                 <tr
                   className={`border-b border-b-BorderColorTwoLight dark:border-b-BorderColorTwo cursor-pointer ${(selectedTransaction?.hash && selectedTransaction?.hash === row.original.hash) ||
-                      (selectedTransaction?.idx && selectedTransaction?.idx === row.original.idx)
-                      ? "bg-SelectRowColor/10"
-                      : ""
+                    (selectedTransaction?.idx && selectedTransaction?.idx === row.original.idx)
+                    ? "bg-SelectRowColor/10"
+                    : ""
                     }`}
                   key={`tr-transac-${idxTR}`}
                   onClick={() => {
@@ -129,7 +129,7 @@ const DetailList = () => {
       </div>
       <div
         id="right-drower"
-        className={`h-[calc(100%-4.5rem)] fixed z-[999] top-4.5rem w-[28rem] overflow-x-hidden transition-{right} duration-500 ${drawerOpen ? "!right-0" : "right-[-30rem]"
+        className={`h-[calc(100%-4.5rem)] fixed z-[999] top-[2.5rem] w-[30rem] overflow-x-hidden transition-{right} duration-500 ${drawerOpen ? "!right-[20rem]" : "right-[-30rem]"
           }`}
       >
         {selectedTransaction ? (

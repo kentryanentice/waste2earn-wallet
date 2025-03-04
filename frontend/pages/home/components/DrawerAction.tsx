@@ -67,6 +67,9 @@ const DrawerAction = ({ drawerOption, setDrawerOption, setDrawerOpen, children }
   function customReceive() {
     return clsx(chechEqId(DrawerOptionEnum.Enum.RECEIVE) ? selectedButton : unselectedButton);
   }
+  // function customWrap() {
+  //   return clsx(chechEqId(DrawerOptionEnum.Enum.WRAP) ? selectedButton : unselectedButton);
+  // }
 };
 
 export default DrawerAction;

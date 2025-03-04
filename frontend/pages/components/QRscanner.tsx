@@ -53,7 +53,7 @@ const QRscanner = ({ qrView, onSuccess, setQRview }: QRscannerProps) => {
         <div className="relative flex flex-col w-full justify-center items-center">
           <div id="scanner" className="!w-full text-md"></div>
 
-          <div className="absolute top-0 left-0 w-full h-[18.8rem] border-black/25 border-y-[2rem] border-x-[4rem] rounded-2xl">
+          <div className="absolute top-[-8px] left-0 w-full h-[19.8rem] border-black/25 border-y-[2rem] border-x-[4rem] rounded-2xl">
             <div className="w-full h-full relative">
               <div className="absolute w-14 h-14 border-l-4 border-t-4 border-SelectRowColor top-0 left-0"></div>
               <div className="absolute w-14 h-14 border-r-4 border-t-4 border-SelectRowColor top-0 right-0"></div>
