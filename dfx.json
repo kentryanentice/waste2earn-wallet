@@ -1,4 +1,5 @@
 {
+  "dfx": "0.24.0",
   "canisters": {
     "assets": {
       "frontend": {
@@ -6,16 +7,25 @@
       },
       "source": ["dist/"],
       "type": "assets"
+    },
+    "db": {
+      "main": "canisters/database/main.mo",
+      "type": "motoko",
+      "optimize": "cycles",
+      "declarations": {
+        "output": "frontend/candid/database"
+      }
     }
   },
   "defaults": {
     "build": {
-      "packtool": ""
+      "args": "",
+      "packtool": "mops sources"
     }
   },
   "networks": {
     "local": {
-      "bind": "127.0.0.1:8000",
+      "bind": "127.0.0.1:4943",
       "type": "ephemeral"
     },
     "ic": {
