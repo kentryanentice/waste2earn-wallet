@@ -1,13 +1,13 @@
 import { useTranslation } from "react-i18next";
 import AuthMethodRender from "@/pages/login/components/AuthMethodRender";
-import LanguageSwitcher from "@/pages/login/components/LanguageSwitcher";
+// import LanguageSwitcher from "@/pages/login/components/LanguageSwitcher";
 
 export default function AuthMethods() {
   const { t } = useTranslation();
 
   return (
     <div className="flex flex-col items-center justify-start w-full h-full bg-PrimaryColorLight dark:bg-PrimaryColor">
-      <LanguageSwitcher />
+      {/* <LanguageSwitcher /> */}
       <div className="flex flex-col items-center justify-center w-full h-full">
         <h2 className="text-[2rem] font-bold text-PrimaryTextColorLight dark:text-PrimaryTextColor">
           {t("login.title")}

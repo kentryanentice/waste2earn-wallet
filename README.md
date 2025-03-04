@@ -1,12 +1,12 @@
-# Waste2Earn Alpha Wallet
+# Waste2Earn Wallet
 
 [![License: GPL3](https://img.shields.io/badge/License-GPL3-blue.svg)](https://choosealicense.com/licenses/gpl-3.0/#)
 [![React Version](https://img.shields.io/badge/React-18.2-blue.svg)](https://reactjs.org/)
 [![TypeScript Version](https://img.shields.io/badge/TypeScript-4.4.3-blue.svg)](https://www.typescriptlang.org/)
 [![Node Version](https://img.shields.io/badge/node-18.16.0-green.svg)](https://nodejs.org/es)
-[![dfx Version](https://img.shields.io/badge/dfx-0.14.1-violet.svg)](https://internetcomputer.org/docs/current/references/cli-reference/dfx-parent)
+[![dfx Version](https://img.shields.io/badge/dfx-0.24.3-violet.svg)](https://internetcomputer.org/docs/current/references/cli-reference/dfx-parent)
 
-Waste2Earn utilizes ICRC-1 Wallet, an application designed for Internet Computer Network. This project allows users to manage their digital assets and perform transactions with major ICRC1 cryptocurrencies. Whether you're a beginner or an experienced crypto enthusiast, ICRC-1 Wallet provides a user-friendly interface for your Wallet needs.
+Waste2Earn utilizes ICRC Wallet, an application designed for Internet Computer Network. This project allows users to manage their digital assets and perform transactions with major ICRC1 cryptocurrencies. Whether you're a beginner or an experienced crypto enthusiast, ICRC-1 Wallet provides a user-friendly interface for your Wallet needs.
 
 ## Table of Contents
 
@@ -20,14 +20,14 @@ Waste2Earn utilizes ICRC-1 Wallet, an application designed for Internet Computer
 
 
 # Frontend canister via browser
-    assets: https://hm7ne-saaaa-aaaao-qezaq-cai.icp0.io/
+    https://hm7ne-saaaa-aaaao-qezaq-cai.icp0.io/
 # Backend canister via Candid interface:
-    db: https://a4gq6-oaaaa-aaaab-qaa4q-cai.raw.icp0.io/?id=i23di-cqaaa-aaaao-qjwaq-cai
+    https://a4gq6-oaaaa-aaaab-qaa4q-cai.raw.icp0.io/?id=i23di-cqaaa-aaaao-qjwaq-cai
 
 
 ## Getting Started
 
-To get started with ICRC-1 Wallet, follow these steps:
+To get started, follow these steps:
 
 1. Clone the repository to your local machine:
 
@@ -134,7 +134,7 @@ ICRC-1 Wallet is built using the following technologies:
 
 ## Usage
 
-Once you have installed the project and started the development server, you can access the ICRC-1 Wallet application in your web browser. Here are some basic usage instructions:
+Once you have installed the project and started the development server, you can access the Waste2Earn Wallet application in your web browser. Here are some basic usage instructions:
 
 - Create a new wallet and secure your wallet information.
 - Add your cryptocurrencies and manage your digital assets.
