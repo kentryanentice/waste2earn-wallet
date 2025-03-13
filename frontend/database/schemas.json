@@ -35,7 +35,9 @@
         "supportedStandards": {
           "type": "array",
           "items": { "type": "string", "maxLength": 100 }
-        }
+        },
+        "deleted": { "type": "boolean" },
+        "updatedAt": { "type": "number" }
       },
       "required": [
         "sortIndex",
@@ -49,7 +51,9 @@
         "fee",
         "index",
         "logo",
-        "supportedStandards"
+        "supportedStandards",
+        "deleted",
+        "updatedAt"
       ],
       "indexes": ["name"]
     },
@@ -75,7 +79,9 @@
               "tokenSymbol": { "type": "string" }
             }
           }
-        }
+        },
+        "deleted": { "type": "boolean" },
+        "updatedAt": { "type": "number" }
       }
     }
   },
@@ -104,9 +110,11 @@
             }
           },
           "required": ["logo", "name", "symbol", "address", "decimal", "tokenName", "tokenSymbol", "supportedStandards"]
-        }
+        },
+        "deleted": { "type": "boolean" },
+        "updatedAt": { "type": "number" }
       },
-      "required": ["subAccountId", "asset", "spender"]
+      "required": ["subAccountId", "asset", "spender", "deleted", "updatedAt"]
     }
   },
   "services": {
@@ -130,8 +138,148 @@
               "decimal": { "type": "string" }
             }
           }
-        }
+        },
+        "deleted": { "type": "boolean" },
+        "updatedAt": { "type": "number" }
       }
     }
+  },
+  "p2p_transactions": {
+    "schema": {
+      "version": 0,
+      "primaryKey": "id",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "offerId": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "buyerId": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "sellerId": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "amount": {
+          "type": "number"
+        },
+        "currency": {
+          "type": "string",
+          "maxLength": 10
+        },
+        "status": {
+          "type": "string",
+          "enum": ["pending", "completed", "disputed", "cancelled"]
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "completedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "disputeReason": {
+          "type": "string",
+          "maxLength": 500
+        }
+      },
+      "required": ["id", "offerId", "buyerId", "sellerId", "amount", "currency", "status", "createdAt"]
+    },
+    "migrationStrategies": {}
+  },
+  "p2p_offers": {
+    "schema": {
+      "version": 0,
+      "primaryKey": "id",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "userId": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "amount": {
+          "type": "number"
+        },
+        "currency": {
+          "type": "string",
+          "maxLength": 10
+        },
+        "price": {
+          "type": "number"
+        },
+        "paymentMethod": {
+          "type": "string",
+          "maxLength": 50
+        },
+        "status": {
+          "type": "string",
+          "enum": ["active", "inactive", "completed"]
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["id", "userId", "amount", "currency", "price", "paymentMethod", "status", "createdAt"]
+    },
+    "migrationStrategies": {}
+  },
+  "p2p_payment_verifications": {
+    "schema": {
+      "version": 0,
+      "primaryKey": "id",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "transactionId": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "userId": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "status": {
+          "type": "string",
+          "enum": ["pending", "verified", "rejected"]
+        },
+        "proof": {
+          "type": "string",
+          "maxLength": 1000
+        },
+        "notes": {
+          "type": "string",
+          "maxLength": 500
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "verifiedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["id", "transactionId", "userId", "status", "proof", "createdAt"]
+    },
+    "migrationStrategies": {}
   }
 }

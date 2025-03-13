@@ -7,7 +7,6 @@ import { ReactComponent as BrazilFlagIcon } from "@/assets/svg/files/brazil.svg"
 import { ReactComponent as ICRC1Logo } from "@/assets/svg/files/logo-light.svg";
 import { ReactComponent as ICRC1LogoDark } from "@/assets/svg/files/logo-dark.svg";
 import { ReactComponent as SunIcon } from "@/assets/svg/files/sun-icon.svg";
-import { ReactComponent as WalletIcon } from "@/assets/svg/files/wallet-icon.svg";
 import { ReactComponent as RefreshIcon } from "@/assets/svg/files/refresh-ccw.svg";
 import icUrl from "@/assets/img/icp-logo.png";
 import ethUrl from "@assets/svg/files/ethereum-icon.svg";
@@ -88,10 +87,9 @@ const TopBarComponent = ({ isLoginPage }: { isLoginPage: boolean }) => {
               {watchOnlyMode && <p className="opacity-50">{t("watchOnlyMode.title")}</p>}
             </div>
           )}
-            <div className="flex flex-row items-center justify-end px-2 space-x-5">
+            <div className="flex flex-row items-center justify-end pl-2 space-x-5">
               {!isLoginPage && (
                 <div className="flex flex-row items-center justify-start py-3 px-0 gap-2 text-md">
-                  <WalletIcon className="fill-SvgColor dark:fill-SvgColor max-w-[1.5rem] h-auto"></WalletIcon>
                   <p className="opacity-70">{t("total.balance")}:</p>
                   <p className="font-medium">{`${currencyOpts.find(c => c.code === selectedCurrency)?.symbol}${getTotalAmountInCurrency().toFixed(2)}`}</p>
                   <DropdownMenu.Root>

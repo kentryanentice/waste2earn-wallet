@@ -2,15 +2,15 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@assets/*": ["frontend/assets/*"],
-      "@candid/*": ["frontend/candid/*"],
-      "@redux/*": ["frontend/redux/*"],
-      "@components/*": ["frontend/components/*"],
-      "@pages/*": ["frontend/pages/*"],
-      "@hooks/*": ["frontend/pages/hooks/*"],
-      "@workers/*": ["frontend/pages/workers/*"],
-      "@common/*": ["frontend/common/*"],
-      "@/*": ["frontend/*"]
+      "@assets/*": ["src/assets/*"],
+      "@candid/*": ["src/candid/*"],
+      "@redux/*": ["src/redux/*"],
+      "@components/*": ["src/components/*"],
+      "@pages/*": ["src/pages/*"],
+      "@hooks/*": ["src/pages/hooks/*"],
+      "@workers/*": ["src/pages/workers/*"],
+      "@common/*": ["src/common/*"],
+      "@/*": ["src/*"]
     }
   }
 }

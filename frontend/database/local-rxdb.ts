@@ -1,22 +1,22 @@
-import { DatabaseOptions, IWalletDatabase } from "@/database/i-wallet-database";
+import { DatabaseOptions, IWalletDatabase } from "./i-wallet-database";
 import { createRxDatabase, RxCollection, RxDocument, RxDatabase, addRxPlugin } from "rxdb";
 import DBSchemas from "./schemas.json";
 import { extractValueFromArray } from "./helpers";
-import { defaultTokens } from "@/common/defaultTokens";
+import { defaultTokens } from "@common/defaultTokens";
 // rxdb plugins
 import { getRxStorageDexie } from "rxdb/plugins/storage-dexie";
 import { RxDBMigrationPlugin } from "rxdb/plugins/migration";
 import { RxDBDevModePlugin } from "rxdb/plugins/dev-mode";
 import { RxDBUpdatePlugin } from "rxdb/plugins/update";
 // types
-import { TAllowance } from "@/@types/allowance";
-import { SupportedStandardEnum } from "@/@types/icrc";
+import { TAllowance } from "../@types/allowance";
+import { SupportedStandardEnum } from "../@types/icrc";
 import {
   AssetDocument as AssetRxdbDocument,
   ContactDocument as ContactRxdbDocument,
   AllowanceDocument as AllowanceRxdbDocument,
   ServiceDocument as ServiceRxdbDocument,
-} from "@/candid/database/db.did";
+} from "@candid/database/db.did";
 import { Asset } from "@redux/models/AccountModels";
 import store from "@redux/Store";
 import {
@@ -38,11 +38,12 @@ import {
   setReduxAllowances,
   updateReduxAllowance,
 } from "@redux/allowance/AllowanceReducer";
-import logger from "@/common/utils/logger";
+import logger from "@common/utils/logger";
 import { Contact } from "@redux/models/ContactsModels";
 import { ServiceData } from "@redux/models/ServiceModels";
 import { setServices as setServicesRedux, setServicesData } from "@redux/services/ServiceReducer";
 import { Identity } from "@dfinity/agent";
+import { Order, PaymentVerification } from "../types/p2p";
 
 addRxPlugin(RxDBUpdatePlugin);
 addRxPlugin(RxDBMigrationPlugin);
@@ -64,6 +65,8 @@ export class LocalRxdbDatabase extends IWalletDatabase {
   private _contacts!: RxCollection<ContactRxdbDocument> | null;
   private _allowances!: RxCollection<AllowanceRxdbDocument> | null;
   private _services!: RxCollection<ServiceRxdbDocument> | null;
+  private _orders!: RxCollection<Order> | null;
+  private _paymentVerifications!: RxCollection<PaymentVerification> | null;
 
   private constructor() {
     super();
@@ -71,6 +74,8 @@ export class LocalRxdbDatabase extends IWalletDatabase {
     this._contacts = null;
     this._allowances = null;
     this._services = null;
+    this._orders = null;
+    this._paymentVerifications = null;
   }
 
   async setIdentity(identity: Identity | null): Promise<void> {
@@ -103,6 +108,16 @@ export class LocalRxdbDatabase extends IWalletDatabase {
     return this.init().then(() => this._services);
   }
 
+  protected get orders(): Promise<RxCollection<Order> | null> {
+    if (this._orders) return Promise.resolve(this._orders);
+    return this.init().then(() => this._orders);
+  }
+
+  protected get paymentVerifications(): Promise<RxCollection<PaymentVerification> | null> {
+    if (this._paymentVerifications) return Promise.resolve(this._paymentVerifications);
+    return this.init().then(() => this._paymentVerifications);
+  }
+
   async init(): Promise<void> {
     try {
       const db: RxDatabase = await createRxDatabase({
@@ -112,12 +127,14 @@ export class LocalRxdbDatabase extends IWalletDatabase {
         eventReduce: true,
       });
 
-      const { assets, contacts, allowances, services } = await db.addCollections(DBSchemas);
+      const { assets, contacts, allowances, services, p2p_transactions, p2p_payment_verifications } = await db.addCollections(DBSchemas);
 
       this._assets = assets;
       this._contacts = contacts;
       this._allowances = allowances;
       this._services = services;
+      this._orders = p2p_transactions;
+      this._paymentVerifications = p2p_payment_verifications;
 
       // Initialize with default tokens if no assets exist
       const existingAssets = await this._assets.find().exec();
@@ -580,5 +597,111 @@ export class LocalRxdbDatabase extends IWalletDatabase {
     this._contacts = null!;
     this._allowances = null!;
     this._services = null!;
+    this._orders = null!;
+    this._paymentVerifications = null!;
+  }
+
+  // Order Methods
+  async createOrder(order: Order): Promise<Order> {
+    try {
+      const result = await (await this.orders)?.insert(order);
+      return result?.toJSON() || order;
+    } catch (error) {
+      logger.debug("LocalRxDb CreateOrder:", error);
+      throw error;
+    }
+  }
+
+  async getOrder(id: string): Promise<Order | null> {
+    try {
+      const result = await (await this.orders)?.findOne(id).exec();
+      return result?.toJSON() || null;
+    } catch (error) {
+      logger.debug("LocalRxDb GetOrder:", error);
+      return null;
+    }
+  }
+
+  async updateOrder(id: string, updates: Partial<Order>): Promise<Order | null> {
+    try {
+      const result = await (await this.orders)?.findOne(id).exec();
+      if (!result) return null;
+      
+      const updated = await result.patch(updates);
+      return updated.toJSON();
+    } catch (error) {
+      logger.debug("LocalRxDb UpdateOrder:", error);
+      return null;
+    }
+  }
+
+  async getOrdersByStatus(status: Order['status']): Promise<Order[]> {
+    try {
+      const results = await (await this.orders)?.find({
+        selector: { status }
+      }).exec();
+      return results?.map(doc => doc.toJSON()) || [];
+    } catch (error) {
+      logger.debug("LocalRxDb GetOrdersByStatus:", error);
+      return [];
+    }
+  }
+
+  async getOrdersByUser(userId: string): Promise<Order[]> {
+    try {
+      const results = await (await this.orders)?.find({
+        selector: { sellerId: userId }
+      }).exec();
+      return results?.map(doc => doc.toJSON()) || [];
+    } catch (error) {
+      logger.debug("LocalRxDb GetOrdersByUser:", error);
+      return [];
+    }
+  }
+
+  // Payment Verification Methods
+  async createPaymentVerification(verification: PaymentVerification): Promise<PaymentVerification> {
+    try {
+      const result = await (await this.paymentVerifications)?.insert(verification);
+      return result?.toJSON() || verification;
+    } catch (error) {
+      logger.debug("LocalRxDb CreatePaymentVerification:", error);
+      throw error;
+    }
+  }
+
+  async getPaymentVerification(orderId: string): Promise<PaymentVerification | null> {
+    try {
+      const result = await (await this.paymentVerifications)?.findOne(orderId).exec();
+      return result?.toJSON() || null;
+    } catch (error) {
+      logger.debug("LocalRxDb GetPaymentVerification:", error);
+      return null;
+    }
+  }
+
+  async updatePaymentVerification(orderId: string, updates: Partial<PaymentVerification>): Promise<PaymentVerification | null> {
+    try {
+      const result = await (await this.paymentVerifications)?.findOne(orderId).exec();
+      if (!result) return null;
+      
+      const updated = await result.patch(updates);
+      return updated.toJSON();
+    } catch (error) {
+      logger.debug("LocalRxDb UpdatePaymentVerification:", error);
+      return null;
+    }
+  }
+
+  async getPaymentVerificationsByOrder(orderId: string): Promise<PaymentVerification[]> {
+    try {
+      const results = await (await this.paymentVerifications)?.find({
+        selector: { orderId }
+      }).exec();
+      return results?.map(doc => doc.toJSON()) || [];
+    } catch (error) {
+      logger.debug("LocalRxDb GetPaymentVerificationsByOrder:", error);
+      return [];
+    }
   }
 }
