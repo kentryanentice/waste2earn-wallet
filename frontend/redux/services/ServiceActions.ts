@@ -49,6 +49,7 @@ export const getServicesData = async (userAgent?: HttpAgent) => {
                 credit: credit ? credit[1].toString() : "",
                 depositFee: tokenInfo.deposit_fee.toString(),
                 withdrawFee: tokenInfo.withdrawal_fee.toString(),
+                minDeposit: tokenInfo.deposit_fee.toString(),
                 visible: false,
               };
 
@@ -146,6 +147,7 @@ export const getServiceData = async (myAgent: HttpAgent, servicePrincipal: strin
             credit: credit ? credit[1].toString() : "",
             depositFee: tokenInfo.deposit_fee.toString(),
             withdrawFee: tokenInfo.withdrawal_fee.toString(),
+            minDeposit: tokenInfo.deposit_fee.toString(),
             visible: false,
           };
 

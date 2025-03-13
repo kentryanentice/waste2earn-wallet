@@ -40,9 +40,9 @@ function getDrawerContainerStyle(isDrawerOpen: boolean) {
   return clsx(
     "fixed",
     "z-[1000]",
-    "w-[28rem]",
+    "w-[31rem]",
     "h-screen",
-    "top-0",
+    "top-5",
     "bg-PrimaryColorLight",
     "dark:bg-PrimaryColor",
     "transition-{right}",
@@ -56,7 +56,7 @@ function getDrawerContainerStyle(isDrawerOpen: boolean) {
 function getDrawerBlank(isDrawerOpen: boolean) {
   return clsx(
     "fixed",
-    "top-0",
+    "top-5",
     "bottom-0",
     "left-0",
     "right-0",

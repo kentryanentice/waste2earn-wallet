@@ -6,8 +6,8 @@ import DetailList from "./components/ICRC/transaction";
 const Home = () => {
   return (
     <div className="flex flex-col w-full space-y-20">
-      <DetailList />
       <AssetsList />
+      <DetailList />
       {/* <img src={bckground} width="1900" height="50" alt="atikra" className=""/> */}
     </div>
   );

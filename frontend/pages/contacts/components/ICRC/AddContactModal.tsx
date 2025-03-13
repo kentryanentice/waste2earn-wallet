@@ -15,8 +15,8 @@ function AddContactModal() {
 
       <BasicModal
         open={open}
-        width="w-[48rem]"
-        padding="py-5 px-8"
+        width="w-[34rem]"
+        padding="py-3 px-4 sm:py-4 sm:px-6 md:py-5 md:px-8"
         border="border border-BorderColorTwoLight dark:border-BorderColorTwo"
       >
         {open && (

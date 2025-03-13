@@ -34,7 +34,7 @@ export default function AddContact({ onClose }: AddContactProps) {
   return (
     <div className="relative flex flex-col items-start justify-start w-full gap-4 text-md">
       <CloseIcon className={getCloseIconStyles(isCreating)} onClick={onClose} />
-      <p>{t("add.contact")}</p>
+      <p className="text-lg sm:text-xl font-medium">{t("add.contact")}</p>
 
       <ContactMainDetails />
       <ContactAssetDetails
@@ -42,25 +42,31 @@ export default function AddContact({ onClose }: AddContactProps) {
         setContactAssetSelected={setContactAssetSelected}
       />
 
-      <div className="flex flex-row items-center justify-end w-full gap-3">
-        <p className="text-TextErrorColor">{newContactErrors?.message || subAccountError?.message}</p>
-        {(isAllowancesChecking || isCreating) && (
-          <LoadingLoader color="dark:border-secondary-color-1-light border-black-color" />
-        )}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-end w-full gap-3 mt-4">
+        <p className="text-TextErrorColor text-sm sm:text-md">{newContactErrors?.message || subAccountError?.message}</p>
+        <div className="flex flex-row items-center gap-3 w-full sm:w-auto">
+          {(isAllowancesChecking || isCreating) && (
+            <LoadingLoader color="dark:border-secondary-color-1-light border-black-color" />
+          )}
 
-        {enableAllowanceTest && (
-          <CustomButton
-            className="bg-slate-color-success min-w-[5rem] flex justify-between items-center"
-            onClick={onCheckAccountsAllowances}
-            disabled={isAllowancesChecking || isCreating}
+          {enableAllowanceTest && (
+            <CustomButton
+              className="bg-slate-color-success min-w-[5rem] flex justify-between items-center w-full sm:w-auto"
+              onClick={onCheckAccountsAllowances}
+              disabled={isAllowancesChecking || isCreating}
+            >
+              <MoneyHandIcon className="fill-PrimaryColorLight" /> {t("test")}
+            </CustomButton>
+          )}
+
+          <CustomButton 
+            className="min-w-[5rem] w-full sm:w-auto" 
+            onClick={onAddContact} 
+            disabled={isCreating || isAllowancesChecking}
           >
-            <MoneyHandIcon className="fill-PrimaryColorLight" /> {t("test")}
+            <p>{t("add.contact")}</p>
           </CustomButton>
-        )}
-
-        <CustomButton className="min-w-[5rem]" onClick={onAddContact} disabled={isCreating || isAllowancesChecking}>
-          <p>{t("add.contact")}</p>
-        </CustomButton>
+        </div>
       </div>
     </div>
   );
@@ -68,7 +74,7 @@ export default function AddContact({ onClose }: AddContactProps) {
 
 function getCloseIconStyles(isCreating: boolean) {
   return clsx(
-    "absolute cursor-pointer top-5 right-5 stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor",
+    "absolute cursor-pointer top-2 right-2 sm:top-5 sm:right-5 stroke-PrimaryTextColorLight dark:stroke-PrimaryTextColor",
     isCreating && "opacity-50 pointer-events-none",
   );
 }
