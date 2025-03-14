@@ -79,7 +79,7 @@ export const P2P: React.FC = () => {
 
     try {
       await p2pService.lockTokensInEscrow(order);
-      await p2pService.updateOrderStatus(order.id, 'pending');
+      await p2pService.updateOrderStatus(order.id, "payment_pending");
       enqueueSnackbar('Order accepted successfully', { variant: 'success' });
       loadData();
     } catch (error) {

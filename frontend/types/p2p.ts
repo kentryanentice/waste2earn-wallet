@@ -10,7 +10,18 @@ export interface Order {
   escrowId?: string;
 }
 
-export type OrderStatus = "open" | "pending" | "completed" | "disputed" | "cancelled";
+export type OrderStatus = 
+  | "open"
+  | "escrow_pending"
+  | "escrow_locked"
+  | "payment_pending"
+  | "payment_submitted"
+  | "payment_verified"
+  | "completed"
+  | "cancelled"
+  | "disputed"
+  | "refunded"
+  | "expired";
 
 export interface PaymentMethod {
   id: string;

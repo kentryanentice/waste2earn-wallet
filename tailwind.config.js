@@ -130,7 +130,7 @@ module.exports = {
       "gray-color-9": "#F6F6F6",
       // SLATE COLORS
       "slate-color-info": "#33B2EF",
-      "slate-color-success": "#50E2C2",
+      "slate-color-success": "#046eb5",
       "slate-color-warning": "#E2B93B",
       "slate-color-error": "#E2507A",
       // COMPONENT
