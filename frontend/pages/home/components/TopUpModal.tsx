@@ -14,6 +14,7 @@ import { Order, PaymentMethod } from "@/types/p2p";
 import { p2pService } from "@/services/p2p";
 import { LoadingLoader } from "@components/loader";
 import PaymentInstructions from "./PaymentInstructions";
+import ValidatorRegistration from './ValidatorRegistration';
 
 interface Validator {
   id: string;
@@ -162,6 +163,7 @@ const TopUpModal = ({ onClose }: TopUpModalProps) => {
   const [selectedValidator, setSelectedValidator] = useState<string>("");
   const [showValidatorList, setShowValidatorList] = useState(false);
   const [validatorFilter, setValidatorFilter] = useState<'all' | 'active'>('all');
+  const [showValidatorRegistration, setShowValidatorRegistration] = useState(false);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -470,32 +472,32 @@ Auto-cancellation if not paid by: ${new Date(Date.now() + escrowTimeout).toLocal
         <div className="p-3 border-b border-BorderColorTwoLight dark:border-BorderColorTwo">
           <div className="flex items-center justify-between mb-2">
             <h4 className="text-sm font-medium">{t("Select Validator")}</h4>
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => setValidatorFilter('all')}
-                className={clsx(
-                  "text-xs px-2 py-1 rounded",
-                  validatorFilter === 'all' 
-                    ? "bg-slate-color-success text-white" 
-                    : "bg-gray-100 dark:bg-gray-700"
-                )}
-              >
-                {t("All")}
-              </button>
-              <button
-                onClick={() => setValidatorFilter('active')}
-                className={clsx(
-                  "text-xs px-2 py-1 rounded",
-                  validatorFilter === 'active' 
-                    ? "bg-slate-color-success text-white" 
-                    : "bg-gray-100 dark:bg-gray-700"
-                )}
-              >
-                {t("Active Only")}
-              </button>
-            </div>
           </div>
-          <div className="text-xs text-gray-500">
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setValidatorFilter('all')}
+              className={clsx(
+                "text-xs px-2 py-1 rounded",
+                validatorFilter === 'all' 
+                  ? "bg-slate-color-success text-white" 
+                  : "bg-gray-100 dark:bg-gray-700"
+              )}
+            >
+              {t("All")}
+            </button>
+            <button
+              onClick={() => setValidatorFilter('active')}
+              className={clsx(
+                "text-xs px-2 py-1 rounded",
+                validatorFilter === 'active' 
+                  ? "bg-slate-color-success text-white" 
+                  : "bg-gray-100 dark:bg-gray-700"
+              )}
+            >
+              {t("Active Only")}
+            </button>
+          </div>
+          <div className="text-xs text-gray-500 mt-2">
             {filteredValidators.length} {validatorFilter === 'active' ? 'active ' : ''}validators available
           </div>
         </div>
@@ -1030,6 +1032,11 @@ Auto-cancellation if not paid by: ${new Date(Date.now() + escrowTimeout).toLocal
           )}
         </div>
       </div>
+      {showValidatorRegistration && (
+        <ValidatorRegistration
+          onClose={() => setShowValidatorRegistration(false)}
+        />
+      )}
     </BasicModal>
   );
 };
