@@ -4,6 +4,7 @@ import { BasicModal } from "@components/modal";
 import { CustomButton } from "@components/button";
 import { CustomInput } from "@components/input";
 import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
+import { ReactComponent as AttachmentIcon } from "@assets/svg/files/attachment-icon.svg";
 import { clsx } from "clsx";
 import { useAppSelector } from "@redux/Store";
 import { Order, PaymentMethod } from "@/types/p2p";
@@ -13,13 +14,26 @@ import PaymentInstructions from "./PaymentInstructions";
 
 interface Message {
   id: string;
-  type: 'order' | 'message';
+  type: 'order' | 'message' | 'payment' | 'image';
   content: string;
   sender: 'validator' | 'user';
   timestamp: Date;
   orderDetails?: Order;
   isNew?: boolean;
+  imageUrl?: string;
 }
+
+interface PaymentDetails {
+  gcash: string;
+  paymaya: string;
+  bpi: string;
+}
+
+const PAYMENT_DETAILS: PaymentDetails = {
+  gcash: "+639157330436",
+  paymaya: "+639157330436",
+  bpi: "2889058032"
+};
 
 interface TopUpModalProps {
   onClose: () => void;
@@ -42,6 +56,8 @@ const TopUpModal = ({ onClose }: TopUpModalProps) => {
   const assets = useAppSelector((state) => state.asset.list.assets);
   const wasteToken = assets.find(asset => asset.tokenSymbol === "WASTE");
   const WASTE_TOKEN_PRICE = 1; // Price per WASTE token in PHP
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -84,6 +100,26 @@ const TopUpModal = ({ onClose }: TopUpModalProps) => {
     setPrice((parseFloat(newAmount) * WASTE_TOKEN_PRICE).toString());
   };
 
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file && file.type.startsWith('image/')) {
+      setSelectedImage(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setMessages(prev => [...prev, {
+          id: Math.random().toString(),
+          type: 'image',
+          content: 'Image attachment',
+          sender: 'user',
+          timestamp: new Date(),
+          imageUrl: reader.result as string,
+          isNew: true
+        }]);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleCreateOrder = async () => {
     if (!amount || !price || !selectedPaymentMethod) return;
     
@@ -93,7 +129,7 @@ const TopUpModal = ({ onClose }: TopUpModalProps) => {
       if (!paymentMethod) return;
 
       const newOrder = await p2pService.createOrder({
-        sellerId: "current-user-id", // Replace with actual user ID
+        sellerId: "current-user-id",
         amount: parseFloat(amount),
         price: parseFloat(price),
         paymentMethod,
@@ -101,7 +137,7 @@ const TopUpModal = ({ onClose }: TopUpModalProps) => {
 
       setOrders([...orders, newOrder]);
       
-      // Add order message to chat with isNew flag
+      // Add order message with payment details
       setMessages(prev => [...prev, {
         id: Math.random().toString(),
         type: 'order',
@@ -112,12 +148,21 @@ const TopUpModal = ({ onClose }: TopUpModalProps) => {
         isNew: true
       }]);
 
-      // Remove isNew flag after animation
-      setTimeout(() => {
-        setMessages(prev => prev.map(msg => 
-          msg.id === newOrder.id ? { ...msg, isNew: false } : msg
-        ));
-      }, 500);
+      // Add payment details message
+      const paymentNumber = paymentMethod.type === 'gcash' 
+        ? PAYMENT_DETAILS.gcash 
+        : paymentMethod.type === 'maya' 
+          ? PAYMENT_DETAILS.paymaya 
+          : PAYMENT_DETAILS.bpi;
+
+      setMessages(prev => [...prev, {
+        id: Math.random().toString(),
+        type: 'payment',
+        content: `Please send payment to ${paymentMethod.name}: ${paymentNumber}`,
+        sender: 'validator',
+        timestamp: new Date(),
+        isNew: true
+      }]);
 
       setAmount("");
       setPrice("");
@@ -206,6 +251,36 @@ const TopUpModal = ({ onClose }: TopUpModalProps) => {
               <div>Price: {message.orderDetails.price} PHP</div>
               <div>Payment: {message.orderDetails.paymentMethod.name}</div>
             </div>
+          )}
+        </div>
+      );
+    }
+
+    if (message.type === 'payment') {
+      return (
+        <div className={clsx(
+          "p-3 rounded-lg max-w-[80%] transform transition-all duration-500 ease-in-out",
+          "bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800",
+          message.isNew ? "animate-slideDown" : ""
+        )}>
+          <div className="font-medium text-blue-600 dark:text-blue-400">{message.content}</div>
+        </div>
+      );
+    }
+
+    if (message.type === 'image') {
+      return (
+        <div className={clsx(
+          "p-2 rounded-lg max-w-[80%] transform transition-all duration-500 ease-in-out",
+          message.sender === 'user' ? "ml-auto" : "",
+          message.isNew ? "animate-slideDown" : ""
+        )}>
+          {message.imageUrl && (
+            <img 
+              src={message.imageUrl} 
+              alt="Payment proof" 
+              className="max-w-full rounded-lg"
+            />
           )}
         </div>
       );
@@ -345,13 +420,28 @@ const TopUpModal = ({ onClose }: TopUpModalProps) => {
                   </div>
                   <div className="p-4 border-t border-BorderColorTwoLight dark:border-BorderColorTwo">
                     <div className="flex gap-2">
-                      <CustomInput
-                        type="text"
-                        value={newMessage}
-                        onChange={(e) => setNewMessage(e.target.value)}
-                        placeholder={t("Type your message...")}
-                        onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-                      />
+                      <div className="relative flex-1">
+                        <CustomInput
+                          type="text"
+                          value={newMessage}
+                          onChange={(e) => setNewMessage(e.target.value)}
+                          placeholder={t("Type your message...")}
+                          onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+                        />
+                        <input
+                          type="file"
+                          ref={fileInputRef}
+                          className="hidden"
+                          accept="image/*"
+                          onChange={handleImageSelect}
+                        />
+                        <button
+                          onClick={() => fileInputRef.current?.click()}
+                          className="absolute right-2 top-1/2 -translate-y-1/2 p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full"
+                        >
+                          <AttachmentIcon className="w-5 h-5" />
+                        </button>
+                      </div>
                       <CustomButton
                         className="bg-slate-color-success text-white"
                         onClick={handleSendMessage}
