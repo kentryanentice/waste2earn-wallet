@@ -1,8 +1,8 @@
 {
-  "top.up": "Top-Up",
+  "top.up": "Top Up",
   "p2p.exchange": "P2P Exchange",
-  "buy.tokens": "Buy Tokens",
-  "sell.tokens": "Sell Tokens",
+  "sell.tokens": "Sell",
+  "buy.tokens": "Buy",
   "amount.waste": "Amount (WASTE)",
   "price.php": "Price (PHP)",
   "enter.amount": "Enter amount",

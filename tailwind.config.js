@@ -16,6 +16,15 @@ module.exports = {
         spacing: "margin, padding",
         width: "width",
       },
+      keyframes: {
+        slideDown: {
+          '0%': { transform: 'translateY(-20px)', opacity: '0' },
+          '100%': { transform: 'translateY(0)', opacity: '1' },
+        }
+      },
+      animation: {
+        slideDown: 'slideDown 0.5s ease-out forwards',
+      }
     },
     fontSize: {
       xm: ".55rem",
@@ -69,7 +78,7 @@ module.exports = {
       RadioNoCheckColorLight: "#4442777f",
       SvgColorLight: "#6F6C99",
       SvgColor: "#6F6C99",
-      AccpetButtonColor: "#33B2EF",
+      AccpetButtonColor: "#07f22e",
       DenyButtonColor: "#332F60",
       SearchInputBorder: "#444277",
       SearchInputBorderLight: "#DFDFE6",
@@ -78,7 +87,7 @@ module.exports = {
       TextErrorColor: "#F5797D",
       TextSendColor: "#F5797D",
       TextReceiveColor: "#3BC9A9",
-      SelectRowColor: "#33B2EF",
+      SelectRowColor: "#05ad67",
       AddSubaccount: "#0D4864",
       ReceiverColor: "#8A9CB7",
       FromBoxColor: "#1C1940",

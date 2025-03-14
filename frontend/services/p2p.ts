@@ -1,11 +1,14 @@
 import { Order, PaymentMethod, Escrow, PaymentVerification } from "@/types/p2p";
-import { db } from "@/database/db";
+import { LocalRxdbDatabase } from "@database/local-rxdb";
 
 class P2PService {
   private static instance: P2PService;
   private readonly ESCROW_TIMEOUT = 24 * 60 * 60 * 1000; // 24 hours
+  private db: LocalRxdbDatabase;
 
-  private constructor() {}
+  private constructor() {
+    this.db = LocalRxdbDatabase.instance;
+  }
 
   static getInstance(): P2PService {
     if (!P2PService.instance) {
@@ -23,9 +26,7 @@ class P2PService {
       expiresAt: new Date(Date.now() + this.ESCROW_TIMEOUT),
     };
 
-    // Store order in local database
-    await db().contacts.addOrder(newOrder);
-    return newOrder;
+    return this.db.createOrder(newOrder);
   }
 
   async lockTokensInEscrow(order: Order): Promise<Escrow> {
@@ -38,25 +39,24 @@ class P2PService {
       expiresAt: new Date(Date.now() + this.ESCROW_TIMEOUT),
     };
 
-    // Store escrow in local database
-    await db().contacts.addEscrow(escrow);
+    // TODO: Implement escrow in RxDB schema
     return escrow;
   }
 
   async updateOrderStatus(orderId: string, status: Order["status"]): Promise<void> {
-    await db().contacts.updateOrderStatus(orderId, status);
+    await this.db.updateOrder(orderId, { status });
   }
 
   async getAvailableOrders(): Promise<Order[]> {
-    return db().contacts.getOpenOrders();
+    return this.db.getOrdersByStatus("open");
   }
 
   async getOrderById(orderId: string): Promise<Order | null> {
-    return db().contacts.getOrderById(orderId);
+    return this.db.getOrder(orderId);
   }
 
-  async getEscrowByOrderId(orderId: string): Promise<Escrow | null> {
-    return db().contacts.getEscrowByOrderId(orderId);
+  async getOrdersByUser(userId: string): Promise<Order[]> {
+    return this.db.getOrdersByUser(userId);
   }
 
   async createPaymentVerification(verification: Omit<PaymentVerification, "status">): Promise<PaymentVerification> {
@@ -65,8 +65,33 @@ class P2PService {
       status: "pending",
     };
 
-    await db().contacts.addPaymentVerification(newVerification);
-    return newVerification;
+    return this.db.createPaymentVerification(newVerification);
+  }
+
+  async verifyPayment(orderId: string): Promise<boolean> {
+    const verification = await this.db.getPaymentVerification(orderId);
+    if (!verification) {
+      return false;
+    }
+
+    await this.db.updatePaymentVerification(orderId, { 
+      status: "verified",
+      verifiedAt: new Date(),
+      verifiedBy: "system" // TODO: Replace with actual verifier
+    });
+
+    await this.db.updateOrder(orderId, { status: "completed" });
+    return true;
+  }
+
+  async disputeOrder(orderId: string): Promise<boolean> {
+    const order = await this.db.getOrder(orderId);
+    if (!order) {
+      return false;
+    }
+
+    await this.db.updateOrder(orderId, { status: "disputed" });
+    return true;
   }
 
   async getPaymentMethods(): Promise<PaymentMethod[]> {

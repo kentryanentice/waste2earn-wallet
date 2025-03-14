@@ -14,7 +14,7 @@ const button = cva("button", {
       deny: ["bg-DenyButtonColor", "text-white"],
       error: ["bg-slate-color-error", "text-white"],
       success: ["bg-slate-color-success", "text-white"],
-      noBG: ["bg-transparent", "text-AccpetButtonColor"],
+      noBG: ["bg-transparent", "text-AcceptButtonColor"],
     },
     size: {
       icon: ["p-2", "rounded-md"],

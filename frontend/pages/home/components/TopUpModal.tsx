@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { BasicModal } from "@components/modal";
 import { CustomButton } from "@components/button";
@@ -11,6 +11,16 @@ import { p2pService } from "@/services/p2p";
 import { LoadingLoader } from "@components/loader";
 import PaymentInstructions from "./PaymentInstructions";
 
+interface Message {
+  id: string;
+  type: 'order' | 'message';
+  content: string;
+  sender: 'validator' | 'user';
+  timestamp: Date;
+  orderDetails?: Order;
+  isNew?: boolean;
+}
+
 interface TopUpModalProps {
   onClose: () => void;
 }
@@ -19,19 +29,28 @@ const TopUpModal = ({ onClose }: TopUpModalProps) => {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<"buy" | "sell">("buy");
   const [amount, setAmount] = useState("");
-  const [price, setPrice] = useState("");
+  const [price, setPrice] = useState("1");
   const [orders, setOrders] = useState<Order[]>([]);
   const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([]);
   const [loading, setLoading] = useState(false);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<string>("");
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [showPaymentInstructions, setShowPaymentInstructions] = useState(false);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [newMessage, setNewMessage] = useState("");
+  const messagesEndRef = useRef<HTMLDivElement>(null);
   const assets = useAppSelector((state) => state.asset.list.assets);
   const wasteToken = assets.find(asset => asset.tokenSymbol === "WASTE");
+  const WASTE_TOKEN_PRICE = 1; // Price per WASTE token in PHP
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
   useEffect(() => {
     loadOrders();
     loadPaymentMethods();
+    scrollToBottom();
   }, []);
 
   const loadOrders = async () => {
@@ -58,6 +77,13 @@ const TopUpModal = ({ onClose }: TopUpModalProps) => {
     }
   };
 
+  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newAmount = e.target.value;
+    setAmount(newAmount);
+    // Automatically calculate price based on amount
+    setPrice((parseFloat(newAmount) * WASTE_TOKEN_PRICE).toString());
+  };
+
   const handleCreateOrder = async () => {
     if (!amount || !price || !selectedPaymentMethod) return;
     
@@ -74,6 +100,25 @@ const TopUpModal = ({ onClose }: TopUpModalProps) => {
       });
 
       setOrders([...orders, newOrder]);
+      
+      // Add order message to chat with isNew flag
+      setMessages(prev => [...prev, {
+        id: Math.random().toString(),
+        type: 'order',
+        content: `New order created: ${newOrder.amount} WASTE for ${newOrder.price} PHP`,
+        sender: 'validator',
+        timestamp: new Date(),
+        orderDetails: newOrder,
+        isNew: true
+      }]);
+
+      // Remove isNew flag after animation
+      setTimeout(() => {
+        setMessages(prev => prev.map(msg => 
+          msg.id === newOrder.id ? { ...msg, isNew: false } : msg
+        ));
+      }, 500);
+
       setAmount("");
       setPrice("");
     } catch (error) {
@@ -129,10 +174,60 @@ const TopUpModal = ({ onClose }: TopUpModalProps) => {
     }
   };
 
+  const handleSendMessage = () => {
+    if (!newMessage.trim()) return;
+
+    setMessages(prev => [...prev, {
+      id: Math.random().toString(),
+      type: 'message',
+      content: newMessage,
+      sender: 'user',
+      timestamp: new Date()
+    }]);
+
+    setNewMessage("");
+  };
+
+  const renderMessage = (message: Message) => {
+    if (message.type === 'order') {
+      return (
+        <div 
+          className={clsx(
+            "flex flex-col gap-2 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg",
+            "transform transition-all duration-500 ease-in-out",
+            message.isNew ? "translate-y-0 opacity-100" : "translate-y-0 opacity-100",
+            message.isNew ? "animate-slideDown" : ""
+          )}
+        >
+          <div className="font-medium text-slate-color-success">{message.content}</div>
+          {message.orderDetails && (
+            <div className="text-sm text-gray-600 dark:text-gray-300">
+              <div>Amount: {message.orderDetails.amount} WASTE</div>
+              <div>Price: {message.orderDetails.price} PHP</div>
+              <div>Payment: {message.orderDetails.paymentMethod.name}</div>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    return (
+      <div className={clsx(
+        "p-3 rounded-lg max-w-[80%] transform transition-all duration-500 ease-in-out",
+        message.sender === 'user' 
+          ? "bg-slate-color-success text-white ml-auto" 
+          : "bg-gray-100 dark:bg-gray-700",
+        message.isNew ? "animate-slideDown" : ""
+      )}>
+        {message.content}
+      </div>
+    );
+  };
+
   return (
     <BasicModal
       open={true}
-      width="w-[95%] sm:w-[80%] md:w-[60%] lg:w-[48rem]"
+      width="w-[30rem]"
       padding="p-4 sm:p-6"
       border="border border-BorderColorTwoLight dark:border-BorderColorTwo"
     >
@@ -146,7 +241,7 @@ const TopUpModal = ({ onClose }: TopUpModalProps) => {
         />
 
         <div className="flex flex-col gap-4">
-          <h2 className="text-xl font-semibold">{t("p2p.exchange")}</h2>
+          <h2 className="text-xl font-semibold">{t("P2P Exchange")}</h2>
           
           {showPaymentInstructions && selectedOrder ? (
             <PaymentInstructions
@@ -166,7 +261,7 @@ const TopUpModal = ({ onClose }: TopUpModalProps) => {
                   )}
                   onClick={() => setActiveTab("buy")}
                 >
-                  {t("buy.tokens")}
+                  {t("Sell")}
                 </button>
                 <button
                   className={clsx(
@@ -177,7 +272,7 @@ const TopUpModal = ({ onClose }: TopUpModalProps) => {
                   )}
                   onClick={() => setActiveTab("sell")}
                 >
-                  {t("sell.tokens")}
+                  {t("Buy")}
                 </button>
               </div>
 
@@ -185,25 +280,25 @@ const TopUpModal = ({ onClose }: TopUpModalProps) => {
               {activeTab === "sell" && (
                 <div className="flex flex-col gap-4">
                   <div className="flex flex-col gap-2">
-                    <label className="text-sm font-medium">{t("amount.waste")}</label>
+                    <label className="text-sm font-medium">{t("Enter Waste Token")}</label>
                     <CustomInput
                       type="number"
                       value={amount}
-                      onChange={(e) => setAmount(e.target.value)}
-                      placeholder={t("enter.amount")}
+                      onChange={handleAmountChange}
+                      placeholder={t("Waste Token Amount")}
                     />
                   </div>
                   <div className="flex flex-col gap-2">
-                    <label className="text-sm font-medium">{t("price.php")}</label>
+                    <label className="text-sm font-medium">{t("Peso Equivalent")}</label>
                     <CustomInput
                       type="number"
                       value={price}
-                      onChange={(e) => setPrice(e.target.value)}
-                      placeholder={t("enter.price")}
+                      disabled
+                      placeholder={t("Php Amount")}
                     />
                   </div>
                   <div className="flex flex-col gap-2">
-                    <label className="text-sm font-medium">{t("payment.methods")}</label>
+                    <label className="text-sm font-medium">{t("Payment Method")}</label>
                     <select
                       className="w-full p-2 border border-BorderColorTwoLight dark:border-BorderColorTwo rounded-lg bg-transparent"
                       value={selectedPaymentMethod}
@@ -217,50 +312,54 @@ const TopUpModal = ({ onClose }: TopUpModalProps) => {
                     </select>
                   </div>
                   <CustomButton
-                    className="bg-slate-color-success text-white"
+                    className={clsx(
+                      "bg-slate-color-success text-white transition-all duration-300",
+                      "hover:bg-slate-color-success/90 active:scale-95"
+                    )}
                     onClick={handleCreateOrder}
                     disabled={loading}
                   >
-                    {loading ? <LoadingLoader /> : t("create.order")}
+                    {loading ? <LoadingLoader /> : t("Create an Order")}
                   </CustomButton>
                 </div>
               )}
 
-              {/* Order List */}
+              {/* Chat Interface */}
               <div className="flex flex-col gap-4">
-                <h3 className="text-lg font-medium">{t("available.orders")}</h3>
-                <div className="flex flex-col gap-2">
-                  {loading ? (
-                    <div className="flex justify-center py-4">
-                      <LoadingLoader />
-                    </div>
-                  ) : (
-                    orders.map((order) => (
-                      <div
-                        key={order.id}
-                        className="flex items-center justify-between p-4 border border-BorderColorTwoLight dark:border-BorderColorTwo rounded-lg"
-                      >
-                        <div className="flex flex-col">
-                          <span className="font-medium">{order.amount} WASTE</span>
-                          <span className="text-sm text-gray-500">
-                            {order.price} PHP per token
-                          </span>
-                          <span className="text-xs text-gray-400">
-                            {order.paymentMethod.name}
-                          </span>
-                        </div>
-                        {activeTab === "buy" && (
-                          <CustomButton
-                            className="bg-slate-color-success text-white"
-                            onClick={() => handleAcceptOrder(order)}
-                            disabled={loading}
-                          >
-                            {t("accept.order")}
-                          </CustomButton>
+                <h3 className="text-lg font-medium">{t("Online Chat")}</h3>
+                <div className="flex flex-col h-[300px] border border-BorderColorTwoLight dark:border-BorderColorTwo rounded-lg overflow-hidden">
+                  <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                    {messages.map((message) => (
+                      <div 
+                        key={message.id} 
+                        className={clsx(
+                          "flex transform transition-all duration-500 ease-in-out",
+                          message.sender === 'user' ? "justify-end" : "justify-start",
+                          message.isNew ? "animate-slideDown" : ""
                         )}
+                      >
+                        {renderMessage(message)}
                       </div>
-                    ))
-                  )}
+                    ))}
+                    <div ref={messagesEndRef} />
+                  </div>
+                  <div className="p-4 border-t border-BorderColorTwoLight dark:border-BorderColorTwo">
+                    <div className="flex gap-2">
+                      <CustomInput
+                        type="text"
+                        value={newMessage}
+                        onChange={(e) => setNewMessage(e.target.value)}
+                        placeholder={t("Type your message...")}
+                        onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+                      />
+                      <CustomButton
+                        className="bg-slate-color-success text-white"
+                        onClick={handleSendMessage}
+                      >
+                        {t("Send")}
+                      </CustomButton>
+                    </div>
+                  </div>
                 </div>
               </div>
             </>

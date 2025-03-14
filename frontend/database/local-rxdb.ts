@@ -60,6 +60,7 @@ export class LocalRxdbDatabase extends IWalletDatabase {
   }
 
   private principalId = "";
+  private db!: RxDatabase;
 
   private _assets!: RxCollection<AssetRxdbDocument> | null;
   private _contacts!: RxCollection<ContactRxdbDocument> | null;
@@ -120,14 +121,14 @@ export class LocalRxdbDatabase extends IWalletDatabase {
 
   async init(): Promise<void> {
     try {
-      const db: RxDatabase = await createRxDatabase({
+      this.db = await createRxDatabase({
         name: `local_db_${this.principalId}`,
         storage: getRxStorageDexie(),
         ignoreDuplicate: true,
         eventReduce: true,
       });
 
-      const { assets, contacts, allowances, services, p2p_transactions, p2p_payment_verifications } = await db.addCollections(DBSchemas);
+      const { assets, contacts, allowances, services, p2p_transactions, p2p_payment_verifications } = await this.db.addCollections(DBSchemas);
 
       this._assets = assets;
       this._contacts = contacts;

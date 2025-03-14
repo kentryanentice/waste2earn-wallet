@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { Order } from "@/types/p2p";
 import { CustomButton } from "@components/button";
-import { ReactComponent as CopyIcon } from "@assets/svg/files/copy.svg";
+import { ReactComponent as CopyIcon } from "@assets/svg/files/copy-icon.svg";
 import { useState } from "react";
 
 interface PaymentInstructionsProps {
