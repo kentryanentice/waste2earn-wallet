@@ -44,6 +44,7 @@ import { ServiceData } from "@redux/models/ServiceModels";
 import { setServices as setServicesRedux, setServicesData } from "@redux/services/ServiceReducer";
 import { Identity } from "@dfinity/agent";
 import { Order, PaymentVerification } from "../types/p2p";
+import { KYCDetails } from "../@types/kyc";
 
 addRxPlugin(RxDBUpdatePlugin);
 addRxPlugin(RxDBMigrationPlugin);
@@ -68,6 +69,7 @@ export class LocalRxdbDatabase extends IWalletDatabase {
   private _services!: RxCollection<ServiceRxdbDocument> | null;
   private _orders!: RxCollection<Order> | null;
   private _paymentVerifications!: RxCollection<PaymentVerification> | null;
+  private _kycDetails!: RxCollection<KYCDetails> | null;
 
   private constructor() {
     super();
@@ -77,6 +79,7 @@ export class LocalRxdbDatabase extends IWalletDatabase {
     this._services = null;
     this._orders = null;
     this._paymentVerifications = null;
+    this._kycDetails = null;
   }
 
   async setIdentity(identity: Identity | null): Promise<void> {
@@ -119,6 +122,11 @@ export class LocalRxdbDatabase extends IWalletDatabase {
     return this.init().then(() => this._paymentVerifications);
   }
 
+  protected get kycDetails(): Promise<RxCollection<KYCDetails> | null> {
+    if (this._kycDetails) return Promise.resolve(this._kycDetails);
+    return this.init().then(() => this._kycDetails);
+  }
+
   async init(): Promise<void> {
     try {
       this.db = await createRxDatabase({
@@ -128,7 +136,7 @@ export class LocalRxdbDatabase extends IWalletDatabase {
         eventReduce: true,
       });
 
-      const { assets, contacts, allowances, services, p2p_transactions, p2p_payment_verifications } = await this.db.addCollections(DBSchemas);
+      const { assets, contacts, allowances, services, p2p_transactions, p2p_payment_verifications, kyc_details } = await this.db.addCollections(DBSchemas);
 
       this._assets = assets;
       this._contacts = contacts;
@@ -136,6 +144,7 @@ export class LocalRxdbDatabase extends IWalletDatabase {
       this._services = services;
       this._orders = p2p_transactions;
       this._paymentVerifications = p2p_payment_verifications;
+      this._kycDetails = kyc_details;
 
       // Initialize with default tokens if no assets exist
       const existingAssets = await this._assets.find().exec();
@@ -600,6 +609,7 @@ export class LocalRxdbDatabase extends IWalletDatabase {
     this._services = null!;
     this._orders = null!;
     this._paymentVerifications = null!;
+    this._kycDetails = null!;
   }
 
   // Order Methods
@@ -703,6 +713,14 @@ export class LocalRxdbDatabase extends IWalletDatabase {
     } catch (error) {
       logger.debug("LocalRxDb GetPaymentVerificationsByOrder:", error);
       return [];
+    }
+  }
+
+  async addKYCDetails(details: KYCDetails): Promise<void> {
+    try {
+      await (await this.kycDetails)?.insert(details);
+    } catch (e) {
+      logger.debug("LocalRxDb AddKYCDetails:", e);
     }
   }
 }

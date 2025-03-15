@@ -281,5 +281,78 @@
       "required": ["id", "transactionId", "userId", "status", "proof", "createdAt"]
     },
     "migrationStrategies": {}
-  }
+  },
+  
+    "kyc_details": {
+      "schema": {
+        "title": "KYC Details Schema",
+        "version": 1,
+        "description": "Schema for storing KYC details",
+        "type": "object",
+        "primaryKey": "principalId",
+        "properties": {
+          "principalId": {
+            "type": "string"
+          },
+          "userType": {
+            "type": "string",
+            "enum": ["validator", "collector", "regular"]
+          },
+          "firstName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "birthday": {
+            "type": "string"
+          },
+          "address": {
+            "type": "string"
+          },
+          "nationality": {
+            "type": "string"
+          },
+          "gender": {
+            "type": "string"
+          },
+          "occupation": {
+            "type": "string"
+          },
+          "photo": {
+            "type": "string"
+          },
+          "bankDetails": {
+            "type": "object",
+            "properties": {
+              "gcash": {
+                "type": "string"
+              },
+              "paymaya": {
+                "type": "string"
+              },
+              "bpi": {
+                "type": "object",
+                "properties": {
+                  "accountNumber": {
+                    "type": "string"
+                  },
+                  "accountName": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "required": ["principalId", "userType", "firstName", "lastName", "email", "phone", "birthday", "address", "nationality", "gender", "occupation"]
+      }
+    }
+  
 }

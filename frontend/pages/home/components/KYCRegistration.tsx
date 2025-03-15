@@ -6,6 +6,7 @@ import { CustomInput } from "@components/input";
 import { ReactComponent as CloseIcon } from "@assets/svg/files/close.svg";
 import { clsx } from "clsx";
 import { useAppSelector } from "@redux/Store";
+import { LocalRxdbDatabase } from "@database/local-rxdb";
 
 interface KYCRegistrationProps {
   onClose: () => void;
@@ -29,7 +30,10 @@ interface RegistrationForm {
   bankDetails?: {
     gcash: string;
     paymaya: string;
-    creditCard: string;
+    bpi: {
+      accountNumber: string;
+      accountName: string;
+    };
   };
 }
 
@@ -54,14 +58,25 @@ const KYCRegistration: React.FC<KYCRegistrationProps> = ({ onClose }) => {
     bankDetails: {
       gcash: '',
       paymaya: '',
-      creditCard: ''
+      bpi: {
+        accountNumber: '',
+        accountName: ''
+      }
     }
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement registration logic
-    console.log('Form submitted:', form);
+    try {
+      // Save KYC details to the database
+      await LocalRxdbDatabase.instance.addKYCDetails(form);
+      // Show confirmation modal
+      alert(t('Thank you for registering! Your details have been saved.'));
+      onClose();
+    } catch (error) {
+      console.error('Failed to save KYC details:', error);
+      alert(t('Failed to save your details. Please try again.'));
+    }
   };
 
   const handleInputChange = (field: string, value: string) => {
@@ -70,7 +85,7 @@ const KYCRegistration: React.FC<KYCRegistrationProps> = ({ onClose }) => {
       setForm(prev => ({
         ...prev,
         [parent]: {
-          ...(prev[parent as keyof typeof prev] as Record<string, string>),
+          ...(prev[parent as keyof RegistrationForm] as any),
           [child]: value
         }
       }));
@@ -330,8 +345,8 @@ const KYCRegistration: React.FC<KYCRegistrationProps> = ({ onClose }) => {
                     <label className="text-sm font-medium">{t("Credit Card")}</label>
                     <CustomInput
                       type="text"
-                      value={form.bankDetails?.creditCard}
-                      onChange={(e) => handleInputChange('bankDetails.creditCard', e.target.value)}
+                      value={form.bankDetails?.bpi?.accountNumber}
+                      onChange={(e) => handleInputChange('bankDetails.bpi.accountNumber', e.target.value)}
                       placeholder="****-****-****-****"
                     />
                   </div>
