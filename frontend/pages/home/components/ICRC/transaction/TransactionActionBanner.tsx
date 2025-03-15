@@ -1,6 +1,7 @@
 // svgs
 import ArrowBottomLeftIcon from "@assets/svg/files/arrow-bottom-left-icon.svg";
 import ArrowTopRightIcon from "@assets/svg/files/arrow-top-right-icon.svg";
+import TopUpIcon from "@assets/svg/files/add-icon.svg";
 //
 import { IconTypeEnum } from "@/common/const";
 import { useTranslation } from "react-i18next";
@@ -10,11 +11,14 @@ import { setTransactionDrawerAction } from "@redux/transaction/TransactionAction
 import { TransactionDrawer } from "@/@types/transactions";
 import { getAssetIcon } from "@/common/utils/icons";
 import { toFullDecimal } from "@common/utils/amount";
+import { useState } from "react";
+import TopUpModal from "../../TopUpModal";
 
 export default function ICRCSubaccountAction() {
   const { selectedAsset, selectedAccount } = useAppSelector((state) => state.asset.helper);
   const { watchOnlyMode } = useAppSelector((state) => state.auth);
   const { t } = useTranslation();
+  const [showTopUpModal, setShowTopUpModal] = useState(false);
 
   return (
     <div className="flex flex-row justify-between items-center w-full h-[4.75rem] bg-TransactionHeaderColorLight dark:bg-TransactionHeaderColor rounded-md">
@@ -51,6 +55,7 @@ export default function ICRCSubaccountAction() {
           </div>
           <p className="text-md">{t("transfer")}</p>
         </div>
+
         <div className="flex flex-col items-center justify-center w-1/3 gap-1">
           <div
             className="flex flex-row items-center justify-center rounded-md cursor-pointer w-7 h-7 bg-SelectRowColor"
@@ -62,6 +67,19 @@ export default function ICRCSubaccountAction() {
           </div>
           <p className="text-md">{t("deposit")}</p>
         </div>
+
+        <div className="flex flex-col items-center justify-center w-1/3 gap-1">
+        <div
+            className="flex flex-row items-center justify-center rounded-md cursor-pointer w-7 h-7 bg-SelectRowColor"
+            onClick={() => setShowTopUpModal(true)}
+          >
+              <img src={TopUpIcon} className="w-5 h-5" alt="top-up-icon" />
+          </div>
+          <p className="text-md">{t("Top Up")}</p>
+              
+          </div>
+        {showTopUpModal && <TopUpModal onClose={() => setShowTopUpModal(false)} />}
+
       </div>
     </div>
   );

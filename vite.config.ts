@@ -78,6 +78,18 @@ export default defineConfig(({ mode }) => {
       alias: {
         // Here we tell Vite the "fake" modules that we want to define
         ...aliases,
+        '@': path.resolve(__dirname, './frontend'),
+        '@components': path.resolve(__dirname, './frontend/components'),
+        '@services': path.resolve(__dirname, './frontend/services'),
+        '@types': path.resolve(__dirname, './frontend/types'),
+        '@database': path.resolve(__dirname, './frontend/database'),
+        '@redux': path.resolve(__dirname, './frontend/redux'),
+        '@assets': path.resolve(__dirname, './frontend/assets'),
+        '@pages': path.resolve(__dirname, './frontend/pages'),
+        '@hooks': path.resolve(__dirname, './frontend/pages/hooks'),
+        '@workers': path.resolve(__dirname, './frontend/pages/workers'),
+        '@common': path.resolve(__dirname, './frontend/common'),
+        '@candid': path.resolve(__dirname, './frontend/candid')
       },
     },
     server: {
