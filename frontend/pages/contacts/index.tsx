@@ -23,27 +23,33 @@ const Contacts = () => {
   }, []);
 
   return (
-    <div className="flex flex-col w-full pt-[1rem] px-[2.25rem]">
+    <div className="flex flex-col w-full pt-[1rem] px-4 md:px-[2.25rem]">
       <Menu />
       <div className="flex flex-col items-start justify-start w-full gap-4">
-        <div className="flex items-center justify-between w-full">
-          <div className="flex items-center w-10/12 gap-3 text-md">
-            <AssetFilter assetFilter={assetFilter} onAssetFilterChange={onAssetFilterChange} />
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between w-full gap-4 md:gap-0">
+          <div className="flex flex-col md:flex-row items-start md:items-center w-full md:w-10/12 gap-3 text-md">
+            <div className="w-full md:w-auto">
+              <AssetFilter assetFilter={assetFilter} onAssetFilterChange={onAssetFilterChange} />
+            </div>
 
-            <CustomInput
-              compOutClass="!w-[40%]"
-              prefix={<img src={SearchIcon} className="mx-2" alt="search-icon" />}
-              intent={"secondary"}
-              sizeInput={"medium"}
-              placeholder={t("search.contact")}
-              value={contactSearchKey}
-              onChange={(e) => onContactSearchKeyChange(e.target.value)}
-            />
+            <div className="w-full md:w-[40%]">
+              <CustomInput
+                compOutClass="!w-full"
+                prefix={<img src={SearchIcon} className="mx-2" alt="search-icon" />}
+                intent={"secondary"}
+                sizeInput={"medium"}
+                placeholder={t("search.contact")}
+                value={contactSearchKey}
+                onChange={(e) => onContactSearchKeyChange(e.target.value)}
+              />
+            </div>
 
-            <AddContactModal />
+            <div className="w-full md:w-auto">
+              <AddContactModal />
+            </div>
           </div>
-          <div className="flex items-center justify-end w-2/12">
-            <p className="mr-2 place-self-end text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor">
+          <div className="flex items-center justify-start md:justify-end w-full md:w-2/12">
+            <p className="mr-2 text-md text-PrimaryTextColorLight dark:text-PrimaryTextColor">
               {t("allowances.only")}
             </p>
             <Switch checked={allowanceOnly} onChange={() => setAllowanceOnly(!allowanceOnly)} />

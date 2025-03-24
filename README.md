@@ -117,6 +117,13 @@ Frontend will be deployed under the canister name "assets"
 - Send and receive cryptocurrencies securely.
 - Real-time cryptocurrency price tracking.
 - Support for Internet Computer Network's unique features.
+- P2P Exchange with escrow system:
+  - Direct token trading between users
+  - Secure escrow system with tiered timeouts based on order size
+  - Multiple payment methods (GCash, Maya, BPI)
+  - Real-time chat with validators
+  - Order status tracking and verification
+  - Rate limiting and security measures
 
 ## Technologies
 
